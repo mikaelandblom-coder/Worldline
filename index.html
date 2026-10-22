@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Steer a worldline through spacetime. A small game where special relativity is the rule set." />
+    <title>Worldline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Syncopate:wght@700&display=swap"
+    />
+    <style>
+      /* Layout: full-screen game canvas; the menu is a scrolling sheet over a live spacetime diagram. */
+      :root {
+        --bg: #0b0e14;
+        --panel: rgba(14, 18, 26, 0.82);
+        --fg: #d8deea;
+        --dim: #7c869a;
+        --line: rgba(150, 170, 210, 0.18);
+        --gold: #ffd166;
+        --exit: #3ddc84;
+        --font-display: 'Syncopate', 'Arial Black', system-ui, sans-serif;
+        --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font-body);
+        overflow: hidden;
+      }
+      #game {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        touch-action: none;
+        outline: none;
+      }
+      #menu-button {
+        position: fixed;
+        left: calc(12px + env(safe-area-inset-left, 0px));
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        font: 500 12px/1 var(--font-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--dim);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+      #menu-button:hover,
+      #menu-button:focus-visible {
+        color: var(--gold);
+        border-color: var(--gold);
+        outline: none;
+      }
+
+      #menu {
+        position: fixed;
+        inset: 0;
+        overflow-y: auto;
+        background: var(--bg);
+      }
+      #menu-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .menu-inner {
+        position: relative;
+        box-sizing: border-box;
+        max-width: 1080px;
+        margin: 0 auto;
+        min-height: 100%;
+        padding-block: calc(48px + env(safe-area-inset-top, 0px)) calc(32px + env(safe-area-inset-bottom, 0px));
+        padding-left: max(20px, env(safe-area-inset-left, 0px));
+        padding-right: max(20px, env(safe-area-inset-right, 0px));
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      .menu-head {
+        display: grid;
+        gap: 18px;
+        justify-items: start;
+      }
+      .eyebrow {
+        margin: 0;
+        font: 500 12px/1.4 var(--font-mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+      .eyebrow b {
+        white-space: nowrap;
+        color: var(--gold);
+        font-weight: 500;
+      }
+      h1 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(2.2rem, 9vw, 5.6rem);
+        line-height: 0.95;
+        letter-spacing: 0.04em;
+        text-wrap: balance;
+        /* The worldline: a gold stroke that bends like an accelerating trajectory. */
+        background: linear-gradient(100deg, var(--fg) 0%, var(--fg) 55%, var(--gold) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .lede {
+        margin: 0;
+        max-width: 54ch;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: var(--fg);
+      }
+      .menu-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px 20px;
+        margin-top: 6px;
+      }
+      #menu-continue {
+        font: 600 15px/1 var(--font-body);
+        color: var(--bg);
+        background: var(--gold);
+        border: 0;
+        padding: 15px 22px;
+        cursor: pointer;
+        display: inline-flex;
+        gap: 12px;
+        align-items: baseline;
+        transition: transform 0.15s ease;
+      }
+      #menu-continue::after {
+        content: attr(data-level);
+        font: 500 12px/1 var(--font-mono);
+        opacity: 0.7;
+      }
+      #menu-continue:hover {
+        transform: translateX(3px);
+      }
+      #menu-continue:focus-visible {
+        outline: 2px solid var(--fg);
+        outline-offset: 4px;
+      }
+      #menu-total {
+        font: 500 13px/1 var(--font-mono);
+        color: var(--dim);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .section-label {
+        margin: 0 0 14px;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .section-label::after {
+        content: '';
+        flex: 1;
+        border-top: 1px solid var(--line);
+      }
+      #menu-levels {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+        gap: 14px;
+      }
+      .level-card {
+        all: unset;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 10px 10px 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(3px);
+        transition: border-color 0.15s ease, transform 0.15s ease;
+        min-width: 0;
+      }
+      .level-card:hover,
+      .level-card:focus-visible {
+        border-color: var(--gold);
+        transform: translateY(-2px);
+      }
+      .level-card:focus-visible {
+        box-shadow: 0 0 0 1px var(--gold);
+      }
+      .level-thumb {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 16 / 10;
+        margin-bottom: 6px;
+      }
+      .level-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 0 4px;
+      }
+      .level-number {
+        font: 500 12px/1 var(--font-mono);
+        letter-spacing: 0.1em;
+        color: var(--dim);
+      }
+      .level-card.cleared .level-number {
+        color: var(--exit);
+      }
+      .level-stars {
+        font-size: 14px;
+        letter-spacing: 2px;
+        color: rgba(150, 170, 210, 0.25);
+      }
+      .level-stars .on {
+        color: var(--gold);
+      }
+      .level-name {
+        padding: 0 4px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--fg);
+      }
+      .level-concept {
+        padding: 0 4px;
+        font: 400 12px/1.4 var(--font-mono);
+        color: var(--dim);
+      }
+
+      .menu-foot {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+        gap: 24px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+      }
+      .menu-foot dl {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 16px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .menu-foot dt {
+        font-family: var(--font-mono);
+        color: var(--gold);
+        white-space: nowrap;
+      }
+      .menu-foot dd {
+        margin: 0;
+        color: var(--dim);
+      }
+.build-stamp {
+        margin: -16px 0 0;
+        font: 400 12px/1.5 var(--font-mono);
+        color: var(--dim);
+        font-variant-numeric: tabular-nums;
+      }
+      .build-stamp time {
+        color: var(--fg);
+      }
+      kbd {
+        font: 500 12px/1 var(--font-mono);
+        color: var(--fg);
+        border: 1px solid var(--line);
+        padding: 2px 5px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .level-card,
+        #menu-continue {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game" tabindex="-1" aria-label="Worldline game: steer a worldline on a spacetime diagram"></canvas>
+    <button id="menu-button" type="button" hidden>Levels</button>
+
+    <div id="menu">
+      <canvas id="menu-bg" aria-hidden="true"></canvas>
+      <div class="menu-inner">
+        <header class="menu-head">
+          <p class="eyebrow">A game on a 1+1D spacetime diagram · <b>c = 1</b></p>
+          <h1>Worldline</h1>
+          <p class="lede">
+            You are an unstable particle with a short life. Reach the exit before your own clock runs out. Moving fast
+            makes that clock tick slower, but you can never cross the light cone.
+          </p>
+          <div class="menu-actions">
+            <button id="menu-continue" type="button">Start</button>
+            <span id="menu-total"></span>
+          </div>
+        </header>
+
+        <section aria-labelledby="levels-label">
+          <h2 class="section-label eyebrow" id="levels-label">Levels</h2>
+          <div id="menu-levels"></div>
+        </section>
+
+        <footer class="menu-foot">
+          <div>
+            <h2 class="section-label eyebrow">Controls</h2>
+            <dl>
+              <dt><kbd>←</kbd> <kbd>→</kbd></dt>
+              <dd>Thrust left or right. On a touch screen, hold either half.</dd>
+              <dt><kbd>Space</kbd></dt>
+              <dd>Pause</dd>
+              <dt><kbd>R</kbd></dt>
+              <dd>Restart the level</dd>
+              <dt><kbd>Esc</kbd></dt>
+              <dd>Back to this menu</dd>
+            </dl>
+          </div>
+          <div>
+            <h2 class="section-label eyebrow">The rules</h2>
+            <dl>
+              <dt>v = tanh φ</dt>
+              <dd>Thrust changes your rapidity φ, so speed never reaches 1.</dd>
+              <dt>dτ = dt / cosh φ</dt>
+              <dd>Your clock runs slow when you move fast.</dd>
+              <dt>D = e<sup>±φ</sup></dt>
+              <dd>Light you run into is blueshifted and worth more fuel.</dd>
+            </dl>
+          </div>
+        </footer>
+        <p class="build-stamp" id="build-stamp"></p>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
