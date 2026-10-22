@@ -1,6 +1,7 @@
 {
   "name": "All together",
   "hint": "Clock, gates, fuel and light. Plan your worldline.",
+  "concept": "Everything at once",
   "start": {
     "x": 0,
     "t": 0,

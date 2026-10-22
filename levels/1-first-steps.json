@@ -1,13 +1,30 @@
 {
   "name": "First steps",
   "hint": "Hold → to thrust. Your slope tilts, but never past the 45° light cone.",
-  "start": { "x": 0, "t": 0, "phi": 0 },
+  "concept": "Rapidity & the light cone",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
   "decayClock": 20,
   "fuel": 3,
   "accel": 1,
-  "bounds": { "xMin": -6, "xMax": 10, "tMax": 24 },
-  "exit": { "x0": 5, "x1": 7, "t0": 0, "t1": 24 },
+  "bounds": {
+    "xMin": -6,
+    "xMax": 10,
+    "tMax": 24
+  },
+  "exit": {
+    "x0": 5,
+    "x1": 7,
+    "t0": 0,
+    "t1": 24
+  },
   "blocks": [],
   "emitters": [],
-  "stars": [8, 12]
+  "stars": [
+    8,
+    12
+  ]
 }

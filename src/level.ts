@@ -24,6 +24,8 @@ export interface Level {
   name: string;
   /** One-line hint shown at the start of the level. */
   hint: string;
+  /** The physics idea the level introduces, shown in the menu. */
+  concept: string;
   start: { x: number; t: number; phi: number };
   decayClock: number;
   fuel: number;
@@ -74,6 +76,7 @@ export function parseLevel(json: unknown): Level {
   const o = record(json, 'level');
   if (typeof o.name !== 'string' || o.name.length === 0) throw new LevelError('level.name must be a non-empty string');
   const hint = typeof o.hint === 'string' ? o.hint : '';
+  const concept = typeof o.concept === 'string' ? o.concept : '';
 
   const s = record(o.start, 'start');
   const start = { x: num(s, 'x', 'start'), t: num(s, 't', 'start'), phi: num(s, 'phi', 'start') };
@@ -127,7 +130,7 @@ export function parseLevel(json: unknown): Level {
     if (stars[1] < stars[0]) throw new LevelError('level.stars must be in increasing order');
   }
 
-  return { name: o.name, hint, start, decayClock, fuel, maxFuel, maxPickup, accel, bounds, exit, blocks, emitters, stars };
+  return { name: o.name, hint, concept, start, decayClock, fuel, maxFuel, maxPickup, accel, bounds, exit, blocks, emitters, stars };
 }
 
 export interface Photon {

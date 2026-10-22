@@ -357,14 +357,14 @@ function drawOverlay(ctx: CanvasRenderingContext2D, run: Run, view: View, w: num
   let body: string[] = [];
   let colour = COLORS.text;
   const touch = matchMedia('(pointer: coarse)').matches;
-  const steer = touch ? 'Hold the left or right half of the screen to thrust.' : '← / → (or A / D) to thrust · Space pause · R restart';
+  const steer = touch ? 'Hold the left or right half of the screen to thrust.' : '← / → (or A / D) to thrust · Space pause · R restart · Esc menu';
 
   if (view.screen === 'intro') {
     title = `${view.levelIndex + 1}. ${run.level.name}`;
     body = [run.level.hint, steer, touch ? 'Touch to start.' : 'Click or press an arrow key to start.'];
   } else if (view.screen === 'paused') {
     title = 'Paused';
-    body = ['Space to resume · R to restart'];
+    body = ['Space to resume · R to restart · Esc for the menu'];
   } else if (view.screen === 'ended') {
     const o = run.outcome;
     const last = view.levelIndex === view.levelCount - 1;
@@ -374,7 +374,7 @@ function drawOverlay(ctx: CanvasRenderingContext2D, run: Run, view: View, w: num
       body = [
         `You made it with ${o.tauLeft.toFixed(2)} of proper time left.`,
         `${run.player.t.toFixed(2)} passed in the lab; only ${run.player.tau.toFixed(2)} passed for you.`,
-        last ? 'That was the last level. R to replay, 1–6 to pick a level.' : touch ? 'Touch to continue.' : 'Enter for the next level · R to retry',
+        last ? 'That was the last level. R to replay · Esc for the menu' : touch ? 'Touch to continue.' : 'Enter for the next level · R to retry · Esc menu',
       ];
     } else if (o.kind === 'lost') {
       colour = COLORS.block;
@@ -384,7 +384,7 @@ function drawOverlay(ctx: CanvasRenderingContext2D, run: Run, view: View, w: num
         bounds: ['You left the level.', 'Stay between the shaded edges, and reach the exit before the top.'],
       }[o.reason];
       title = why[0];
-      body = [why[1], touch ? 'Touch to retry.' : 'R to retry'];
+      body = [why[1], touch ? 'Touch to retry.' : 'R to retry · Esc menu'];
     }
   } else return;
 

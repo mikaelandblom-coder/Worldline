@@ -1,6 +1,7 @@
 {
   "name": "Gates",
   "hint": "Blocks only exist for a while. Wait for the first to vanish, then dash before the second appears.",
+  "concept": "Events in spacetime",
   "start": {
     "x": 0,
     "t": 0,

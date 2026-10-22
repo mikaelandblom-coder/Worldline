@@ -1,6 +1,7 @@
 {
   "name": "Headwind",
   "hint": "Not enough fuel to get there. Charge into the oncoming light: blueshifted photons are worth more.",
+  "concept": "Relativistic Doppler",
   "start": {
     "x": 0,
     "t": 0,

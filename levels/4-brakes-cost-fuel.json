@@ -1,6 +1,7 @@
 {
   "name": "Brakes cost fuel",
   "hint": "Beat the gate, then brake and wait for the exit to open. Slowing down costs as much as speeding up.",
+  "concept": "Rapidity budget",
   "start": {
     "x": 0,
     "t": 0,

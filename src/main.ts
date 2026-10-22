@@ -3,6 +3,7 @@
 import { createRun, tick, type Run } from './game';
 import { Input } from './input';
 import { LEVELS } from './levels';
+import { Menu } from './menu';
 import { DT } from './physics';
 import { render, type Screen } from './render';
 
@@ -14,6 +15,7 @@ const STORAGE_KEY = 'worldline.bestStars';
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 const input = new Input(canvas);
+const menuButton = document.getElementById('menu-button') as HTMLButtonElement;
 
 function loadBest(): number[] {
   try {
@@ -39,12 +41,35 @@ let run: Run = createRun(LEVELS[levelIndex]);
 let screen: Screen = 'intro';
 let accumulator = 0;
 
+const menu = new Menu(document.getElementById('menu')!, {
+  levels: LEVELS,
+  onSelect: (index) => {
+    load(index);
+    // Start right away: choosing a level is the intent to play it.
+    screen = 'playing';
+  },
+});
+
 function load(index: number): void {
   levelIndex = Math.max(0, Math.min(LEVELS.length - 1, index));
   run = createRun(LEVELS[levelIndex]);
   screen = 'intro';
   accumulator = 0;
+  menu.hide();
+  menuButton.hidden = false;
+  played = true;
+  canvas.focus();
 }
+
+let played = false;
+
+function openMenu(): void {
+  menuButton.hidden = true;
+  // Before any level is played, focus the Start button; afterwards, the last level's card.
+  menu.show(best, played ? levelIndex : undefined);
+}
+
+menuButton.addEventListener('click', openMenu);
 
 function finish(): void {
   screen = 'ended';
@@ -55,7 +80,17 @@ function finish(): void {
 }
 
 function handleActions(): void {
-  for (const a of input.takeActions()) {
+  const actions = input.takeActions();
+  if (menu.visible) {
+    // The menu handles its own keys; only digit shortcuts pass through.
+    for (const a of actions) if (typeof a === 'object' && a.level < LEVELS.length) menu.select(a.level);
+    return;
+  }
+  for (const a of actions) {
+    if (a === 'menu') {
+      openMenu();
+      return;
+    }
     if (typeof a === 'object') {
       if (a.level < LEVELS.length) load(a.level);
     } else if (a === 'restart') load(levelIndex);
@@ -89,6 +124,10 @@ function frame(now: number): void {
   const elapsed = Math.min(0.25, (now - last) / 1000);
   last = now;
   handleActions();
+  if (menu.visible) {
+    requestAnimationFrame(frame);
+    return;
+  }
   if (screen === 'playing') {
     accumulator += elapsed * TIME_SCALE;
     let steps = 0;
@@ -105,4 +144,5 @@ function frame(now: number): void {
   render(ctx, run, { screen, levelIndex, levelCount: LEVELS.length, bestStars: best[levelIndex] });
   requestAnimationFrame(frame);
 }
+openMenu();
 requestAnimationFrame(frame);

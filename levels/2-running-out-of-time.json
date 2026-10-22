@@ -1,13 +1,30 @@
 {
   "name": "Running out of time",
   "hint": "The exit is 18 away and you only live for 6. Go fast: a fast clock ticks slow.",
-  "start": { "x": 0, "t": 0, "phi": 0 },
+  "concept": "Time dilation",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
   "decayClock": 6,
   "fuel": 3,
   "accel": 1.5,
-  "bounds": { "xMin": -2, "xMax": 22, "tMax": 40 },
-  "exit": { "x0": 18, "x1": 20, "t0": 0, "t1": 40 },
+  "bounds": {
+    "xMin": -2,
+    "xMax": 22,
+    "tMax": 40
+  },
+  "exit": {
+    "x0": 18,
+    "x1": 20,
+    "t0": 0,
+    "t1": 40
+  },
   "blocks": [],
   "emitters": [],
-  "stars": [1.5, 2.2]
+  "stars": [
+    1.5,
+    2.2
+  ]
 }

@@ -1,6 +1,6 @@
 // Keyboard and touch input. Thrust is read every step; other keys fire actions.
 
-export type Action = 'restart' | 'pause' | 'next' | 'start' | { level: number };
+export type Action = 'restart' | 'pause' | 'next' | 'start' | 'menu' | { level: number };
 
 export class Input {
   private left = false;
@@ -33,6 +33,8 @@ export class Input {
   }
 
   private onKey(e: KeyboardEvent, down: boolean): void {
+    // Let focused buttons (menu cards, the Levels button) handle their own activation keys.
+    if (e.target instanceof HTMLButtonElement && (e.code === 'Enter' || e.code === 'Space')) return;
     switch (e.code) {
       case 'ArrowLeft':
       case 'KeyA':
@@ -47,6 +49,10 @@ export class Input {
         break;
       case 'Space':
         if (down && !e.repeat) this.actions.push('pause');
+        break;
+      case 'Escape':
+      case 'KeyM':
+        if (down && !e.repeat) this.actions.push('menu');
         break;
       case 'KeyN':
       case 'Enter':
