@@ -361,7 +361,7 @@ function drawOverlay(ctx: CanvasRenderingContext2D, run: Run, view: View, w: num
 
   if (view.screen === 'intro') {
     title = `${view.levelIndex + 1}. ${run.level.name}`;
-    body = [run.level.hint, steer, touch ? 'Touch to start.' : 'Press an arrow key to start.'];
+    body = [run.level.hint, steer, touch ? 'Touch to start.' : 'Click or press an arrow key to start.'];
   } else if (view.screen === 'paused') {
     title = 'Paused';
     body = ['Space to resume · R to restart'];

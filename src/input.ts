@@ -16,7 +16,12 @@ export class Input {
       this.touches.clear();
     });
     target.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'mouse') return;
+      if (e.pointerType === 'mouse') {
+        // Clicking gives the page keyboard focus (needed when embedded in a frame).
+        window.focus();
+        this.actions.push('start');
+        return;
+      }
       e.preventDefault();
       const side = e.clientX < target.clientWidth / 2 ? -1 : 1;
       this.touches.set(e.pointerId, side);
