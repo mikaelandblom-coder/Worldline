@@ -63,6 +63,7 @@ export class Menu {
     });
 
     this.continueButton.addEventListener('click', () => this.onSelect(this.nextLevel()));
+    showBuildStamp(root.querySelector('#build-stamp') as HTMLElement);
     window.addEventListener('resize', () => this.resizeBg());
   }
 
@@ -137,6 +138,25 @@ export class Menu {
     drawBackground(this.bg, this.reducedMotion.matches ? 0 : now / 1000);
     if (!this.reducedMotion.matches) this.raf = requestAnimationFrame((t) => this.animate(t));
   }
+}
+
+/** Show when this build was made (the deploy time on GitHub Pages), in the viewer's time zone. */
+function showBuildStamp(el: HTMLElement): void {
+  const built = new Date(__BUILD_TIME__);
+  const when = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  }).format(built);
+  el.textContent = `${__BUILD_DEPLOYED__ ? 'Deployed' : 'Built'} `;
+  const time = document.createElement('time');
+  time.dateTime = __BUILD_TIME__;
+  time.textContent = when;
+  el.appendChild(time);
+  if (__BUILD_COMMIT__) el.append(` · commit ${__BUILD_COMMIT__}`);
 }
 
 /**

@@ -266,6 +266,15 @@
         margin: 0;
         color: var(--dim);
       }
+.build-stamp {
+        margin: -16px 0 0;
+        font: 400 12px/1.5 var(--font-mono);
+        color: var(--dim);
+        font-variant-numeric: tabular-nums;
+      }
+      .build-stamp time {
+        color: var(--fg);
+      }
       kbd {
         font: 500 12px/1 var(--font-mono);
         color: var(--fg);
@@ -331,6 +340,7 @@
             </dl>
           </div>
         </footer>
+        <p class="build-stamp" id="build-stamp"></p>
       </div>
     </div>
 
