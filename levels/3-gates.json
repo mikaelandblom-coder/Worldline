@@ -1,0 +1,42 @@
+{
+  "name": "Gates",
+  "hint": "Blocks only exist for a while. Wait for the first to vanish, then dash before the second appears.",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
+  "decayClock": 20,
+  "fuel": 4,
+  "accel": 1.5,
+  "bounds": {
+    "xMin": -3,
+    "xMax": 16,
+    "tMax": 30
+  },
+  "exit": {
+    "x0": 12,
+    "x1": 14,
+    "t0": 0,
+    "t1": 30
+  },
+  "blocks": [
+    {
+      "x0": 3,
+      "x1": 4,
+      "t0": 0,
+      "t1": 6
+    },
+    {
+      "x0": 8.5,
+      "x1": 9.5,
+      "t0": 17,
+      "t1": 30
+    }
+  ],
+  "emitters": [],
+  "stars": [
+    9,
+    11
+  ]
+}

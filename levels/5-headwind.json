@@ -1,0 +1,46 @@
+{
+  "name": "Headwind",
+  "hint": "Not enough fuel to get there. Charge into the oncoming light: blueshifted photons are worth more.",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
+  "decayClock": 12,
+  "fuel": 0.3,
+  "maxFuel": 3,
+  "maxPickup": 0.6,
+  "accel": 1.5,
+  "bounds": {
+    "xMin": -4,
+    "xMax": 24,
+    "tMax": 40
+  },
+  "exit": {
+    "x0": 20,
+    "x1": 22,
+    "t0": 0,
+    "t1": 40
+  },
+  "blocks": [],
+  "emitters": [
+    {
+      "x": 23.5,
+      "direction": -1,
+      "tStart": -30,
+      "period": 2.5,
+      "baseEnergy": 0.15
+    },
+    {
+      "x": -3.5,
+      "direction": 1,
+      "tStart": -1.25,
+      "period": 2.5,
+      "baseEnergy": 0.15
+    }
+  ],
+  "stars": [
+    4,
+    5.3
+  ]
+}

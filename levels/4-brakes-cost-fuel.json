@@ -1,0 +1,42 @@
+{
+  "name": "Brakes cost fuel",
+  "hint": "Beat the gate, then brake and wait for the exit to open. Slowing down costs as much as speeding up.",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
+  "decayClock": 25,
+  "fuel": 2.2,
+  "accel": 1.5,
+  "bounds": {
+    "xMin": -3,
+    "xMax": 11,
+    "tMax": 24
+  },
+  "exit": {
+    "x0": 7,
+    "x1": 8,
+    "t0": 14,
+    "t1": 16
+  },
+  "blocks": [
+    {
+      "x0": 2,
+      "x1": 3,
+      "t0": 4.5,
+      "t1": 24
+    },
+    {
+      "x0": 9,
+      "x1": 10,
+      "t0": 0,
+      "t1": 24
+    }
+  ],
+  "emitters": [],
+  "stars": [
+    12.5,
+    13.3
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "name": "All together",
+  "hint": "Clock, gates, fuel and light. Plan your worldline.",
+  "start": {
+    "x": 0,
+    "t": 0,
+    "phi": 0
+  },
+  "decayClock": 12,
+  "fuel": 0.8,
+  "maxFuel": 3,
+  "maxPickup": 1,
+  "accel": 1.5,
+  "bounds": {
+    "xMin": -3,
+    "xMax": 30,
+    "tMax": 40
+  },
+  "exit": {
+    "x0": 26,
+    "x1": 28,
+    "t0": 0,
+    "t1": 40
+  },
+  "blocks": [
+    {
+      "x0": 3,
+      "x1": 4,
+      "t0": 0,
+      "t1": 5
+    },
+    {
+      "x0": 13,
+      "x1": 14,
+      "t0": 18,
+      "t1": 40
+    },
+    {
+      "x0": 20,
+      "x1": 21,
+      "t0": 0,
+      "t1": 20
+    }
+  ],
+  "emitters": [
+    {
+      "x": 29.5,
+      "direction": -1,
+      "tStart": -36,
+      "period": 1.2,
+      "baseEnergy": 0.25
+    },
+    {
+      "x": -2.5,
+      "direction": 1,
+      "tStart": -0.6,
+      "period": 1.2,
+      "baseEnergy": 0.25
+    }
+  ],
+  "stars": [
+    3,
+    5
+  ]
+}
